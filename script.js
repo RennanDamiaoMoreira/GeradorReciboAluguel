@@ -44,7 +44,7 @@ function retornaString(inquilino,locador,nomeMes,numero,valor,referencia,rua,bai
                                ' <h6>Mês de Referência</h6>'+
                                 '<h6 class="dataRef">'+referencia+'</h6>'+
                             '</div>'+
-                            '<div class="yellow col s6 center-align">'+
+                            '<div class=" col s6 center-align">'+
                                 '<h6>RECIBO DE ALUGUEL</h6>'+
                             '</div>'+
                             '<div class=" col s2">'+

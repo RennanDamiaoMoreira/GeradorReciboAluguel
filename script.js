@@ -38,16 +38,16 @@ function retornaString(inquilino,locador,nomeMes,numero,valor,referencia,rua,bai
   base ='<DIV class="ROW">'+
             '<div class="col s12">'+
                 '<div class=" container  ">'+
-                    '<div class="card red">'+
+                    '<div class="card ">'+
                        ' <div class="row">'+
-                           ' <div class="blue col s2 center-align offset-s1">'+
+                           ' <div class=" col s2 center-align offset-s1">'+
                                ' <h6>Mês de Referência</h6>'+
                                 '<h6 class="dataRef">'+referencia+'</h6>'+
                             '</div>'+
                             '<div class="yellow col s6 center-align">'+
                                 '<h6>RECIBO DE ALUGUEL</h6>'+
                             '</div>'+
-                            '<div class="blue col s2">'+
+                            '<div class=" col s2">'+
                                 '<h6>Nº'+numero+'</h6>'+
                             '</div>'+
                         '</div>'+

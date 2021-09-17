@@ -9,7 +9,7 @@
 <p align="center">
   Materialize, a CSS Framework based on material design.
   <br>
-  <a href="http://materializecss.com/"><strong>-- Browse the docs --</strong></a>
+  <a href="https://rennandamiaomoreira.github.io/GeradorReciboAluguel/"><strong>-- conheça o sistema --</strong></a>
   <br>
   <br>
   <a href="https://travis-ci.org/Dogfalo/materialize">

@@ -1,13 +1,9 @@
-<p align="center">
-  <a href="http://materializecss.com/">
-    <img src="http://materializecss.com/res/materialize.svg" width="150">
-  </a>
-</p>
 
-<h3 align="center">MaterializeCSS</h3>
+
+<h3 align="center">Gerador de Recibos de Aluguel</h3>
 
 <p align="center">
-  Materialize, a CSS Framework based on material design.
+  
   <br>
   <a href="https://rennandamiaomoreira.github.io/GeradorReciboAluguel/"><strong>-- conheça o sistema --</strong></a>
   <br>

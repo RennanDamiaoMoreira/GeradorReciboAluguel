@@ -165,11 +165,51 @@ function generateString(vetor, size) {
     for (size = size - 1; 0 <= size; size--) {
 
         switch (size) {
-            case 4: //dezena de milk
-
+            case 4: //dezena de milhar
+            switch (vetor[size]) {
+                case 1:
+                    if (vetor.every(elem => elem == 0)) {
+                        final = (final.length > 0 ? final + " E" : "") + " DEZ";
+                    } else {
+                        final = (final.length > 0 ? final + " E " : "") + cadeiaDez(vetor[size - 1]) + " MIL";
+                        size -= 1;
+                    }
+                    break;
+                case 2:
+                    final = (final.length > 0 ? final + " E" : "") + " VINTE ";
+                    break;
+                case 3:
+                    final = (final.length > 0 ? final + " E" : "") + " TRINTA ";
+                    break;
+                case 4:
+                    final = (final.length > 0 ? final + " E" : "") + " QUARENTA ";
+                    break;
+                case 5:
+                    final = (final.length > 0 ? final + " E" : "") + " CINQUENTA ";
+                    break;
+                case 6:
+                    final = (final.length > 0 ? final + " E" : "") + " SESSENTA ";
+                    break;
+                case 7:
+                    final = (final.length > 0 ? final + " E" : "") + " SETENTA ";
+                    break;
+                case 8:
+                    final = (final.length > 0 ? final + " E" : "") + " OITENTA ";
+                    break;
+                case 9:
+                    final = (final.length > 0 ? final + " E" : "") + " NOVENTA ";
+                    break;
+                default:
+                    ;
+                    break;
+            }
+            break;
             case 3: // milhar
 
                 switch (vetor[size]) {
+                    case 0 :
+                        final = (final.length > 0 ? final + " E" : "") + " MIL";
+                        break;
                     case 1:
                         if (vetor.every(elem => elem == 0)) {
                             final = (final.length > 0 ? final + " E" : "") + " MIL";
@@ -253,7 +293,7 @@ function generateString(vetor, size) {
                             final = (final.length > 0 ? final + " E" : "") + " DEZ";
                         } else {
                             final = (final.length > 0 ? final + " E " : "") + cadeiaDez(vetor[size - 1]);
-                            size = -1;
+                            size -= 1;
                         }
                         break;
                     case 2:

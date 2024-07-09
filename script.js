@@ -18,6 +18,8 @@ function adcElemento() {
     casa = document.getElementById("numero").value;
     ap = document.getElementById("casa").value;
     rua = document.getElementById("rua").value;
+    segundaVia = document.getElementById("segunda-via").checked;
+    
     inicio = inicio.split("-");
     inicio = new Date(inicio[0], (inicio[1] - 1), inicio[2]);
     final = final.split("-");
@@ -25,69 +27,84 @@ function adcElemento() {
     numeroMeses = calculaMeses(inicio, final);
     dataAtual = inicio;
 
+
+    console.log(inicio, final, numeroMeses, dataAtual, inquilino, locador, valor, valorExtenso, cidade, bairro, casa, ap, rua, segundaVia)
+    
     for (let numero = 1; numero <= numeroMeses; numero++) {
+        let conteudoA, conteudoB;
 
-        final = '<div class="quebraPag">' + retornaString(inquilino, locador, mes[dataAtual.getMonth()], numero, valor, (dataAtual.getMonth() + 1) + "/" + (dataAtual.getYear() + 1900), rua, bairro, casa, ap, cidade) + retornaString(inquilino, locador, mes[dataAtual.getMonth()], numero, valor, (dataAtual.getMonth() + 1) + "/" + (dataAtual.getYear() + 1900), rua, bairro, casa, ap, cidade) + "</div>";
+        conteudoA = retornaString(inquilino, locador, mes[dataAtual.getMonth()], numero, valor, valorExtenso, (`${dataAtual.getMonth()+1}/${dataAtual.getYear()+1900}`), rua, bairro, casa, ap, cidade,dataAtual);
+        
+        if (segundaVia) {
+            conteudoB = conteudoA;
+        } else {
+            numero++;
+            dataAtual.setMonth(dataAtual.getMonth() + 1);
 
-        document.getElementById("recibo").innerHTML += final;
+            if (numero > numeroMeses) {
+                break;
+            }
 
+            conteudoB = retornaString(inquilino, locador, mes[dataAtual.getMonth()], numero, valor, valorExtenso, (`${dataAtual.getMonth()+1}/${dataAtual.getYear()+1900}`), rua, bairro, casa, ap, cidade,dataAtual);
+        }
+
+        document.getElementById("recibo").innerHTML += conteudoA + conteudoB + "<div class='quebraPag'></div>";
+    
         dataAtual.setMonth(dataAtual.getMonth() + 1);
     }
 }
 
-function retornaString(inquilino, locador, nomeMes, numero, valor, referencia, rua, bairro, numeroCasa, numeroAP, cidade) {
-    base = '<DIV class="ROW">' +
-        '<div class="col s12">' +
-        '<div class=" container  ">' +
-        '<div class="card ">' +
-        ' <div class="row">' +
-        ' <div class=" col s2 center-align offset-s1">' +
-        ' <h6>Mês de Referência</h6>' +
-        '<h6 class="dataRef">' + referencia + '</h6>' +
-        '</div>' +
-        '<div class=" col s6 center-align">' +
-        '<h6>RECIBO DE ALUGUEL</h6>' +
-        '</div>' +
-        '<div class=" col s2">' +
-        '<h6>Nº' + numero + '</h6>' +
-        '</div>' +
-        '</div>' +
-        '<div class="row">' +
-        '<div class="col s6 center">' +
-        '<h6>INQUILINO(A)</h6>' +
-        '<p class="col s10 offset-s1">' + inquilino + '</p>' +
-        '</div>' +
-        '<div class="col s6 center">' +
-        '<h6>PROPRIETARIO(A)</h6>' +
-        '<p class="col s10 offset-s1">' + locador + '</p>' +
-        '</div>' +
-        '<div class="col s12 container center">' +
-        '<h6>ENDEREÇO</h6>' +
-        '<P>RUA ' + rua + ', Nº ' + numeroCasa + ', CASA ' + numeroAP + ', ' + bairro + ' ' + cidade + '</P>' +
-        '<p>Recebi de, ' + inquilino + ', a importância de R$ ' + valor + '(' + valorExtenso + '), como pagamento do aluguel do imóvel residencial indicado acima, referente ao mês de ' + nomeMes + ' de ' + (dataAtual.getYear() + 1900) + '.</p>' +
-
-        '</div>' +
-        '</div>' +
-
-
-
-        '<div class="row ">' +
-
-        '<div class="col s10 center offset-s1" >' +
-        '<HR>' +
-        '</HR>' +
-        '<h6 >' + locador +
-        '</h6>' +
-        '</div>' +
-        '</div>' +
-
-
-        '</div>' +
-        '</div>' +
-        '</div>' +
-        '</DIV></div>';
-
-    return base;
+function retornaString(inquilino, locador, nomeMes, numero, valor, valorExtenso, referencia, rua, bairro, numeroCasa, numeroAP, cidade, dataAtual) {
+    return `<div class="row">
+                <div class="col s12">
+                    <div class="container">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col s2 center-align offset-s1">
+                                    <h6>Mês de Referência</h6>
+                                    <h6 class="dataRef">${referencia}</h6>
+                                </div>
+                                <div class="col s6 center-align">
+                                    <h6>RECIBO DE ALUGUEL</h6>
+                                </div>
+                                <div class="col s2">
+                                    <h6>Nº${numero}</h6>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col s6 center">
+                                    <h6>INQUILINO(A)</h6>
+                                    <p class="col s10 offset-s1">${inquilino}</p>
+                                </div>
+                                <div class="col s6 center">
+                                    <h6>PROPRIETÁRIO(A)</h6>
+                                    <p class="col s10 offset-s1">${locador}</p>
+                                </div>
+                                <div class="col s12 container center">
+                                    <h6>ENDEREÇO</h6>
+                                    <p>RUA ${rua}, Nº ${numeroCasa}, CASA ${numeroAP}, ${bairro} ${cidade}</p>
+                                    <p>Recebi de ${inquilino}, a importância de R$ ${valor} (${valorExtenso}), como
+                                        pagamento do aluguel do imóvel residencial indicado acima, referente ao mês de
+                                        ${nomeMes} de ${dataAtual.getYear() + 1900}.</p>
+                                </div>
+                            </div>
+                            <div style="padding-bottom: 10px;">
+                                <div class="row">
+                                    <div class="col s9 center ">
+                                        <hr>
+                                        <h6>${locador}</h6>
+                                    </div>
+                                    <div class="col s3">
+                                        <hr>
+                                        <h6>Data de Pagamento</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
 }
 
 

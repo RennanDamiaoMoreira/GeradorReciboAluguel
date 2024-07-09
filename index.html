@@ -27,6 +27,7 @@
     <meta name="google-site-verification" content="cHc9ku_yMv4y8DhApohJNucnqFjQscXv2vftnZROdxE" />
 </head>
 <meta name="google-site-verification" content="cHc9ku_yMv4y8DhApohJNucnqFjQscXv2vftnZROdxE" />
+
 <body class="">
     <DIV class="ROW " id="modelo">
         <div class="col s12">
@@ -68,55 +69,61 @@
 
                             <h6>Período</h6>
                             <div class="container">
-                                <p> Data inicial<input type="date" placeholder="dataInicial" id="inicio"></p>
-
-
-                                <p>Data Final
-                                    <input type="date" placeholder="dataFinal" id="final">
-                                </p>
+                                <div class="row">
+                                    <div class="col s6">
+                                        <p>Data inicial</p>
+                                        <input type="date" placeholder="dataInicial" id="inicio"
+                                            style="width: fit-content;" />
+                                    </div>
+                                    <div class="col s6">
+                                        <p>Data Final</p>
+                                        <input type="date" placeholder="dataFinal" id="final"
+                                            style="width: fit-content;">
+                                    </div>
+                                </div>
                             </div>
                             <br>
                             <h6>Valor</h6>
                             <div class="container">
-                                <input type="text" placeholder="valor" id="valor">
-                                <input type="text" placeholder="Valor por extenso (opcional)" id="valorExtenso">
+                                <div class="row">
+                                    <div class="col s6">
+                                        <input type="text" placeholder="valor" id="valor">
+                                    </div>
+                                    <div class="col s6">
+                                        <input type="text" placeholder="Valor por extenso (opcional)" id="valorExtenso">
+                                    </div>
+                                </div>
                             </div>
-
-
-
-
-
-
                         </div>
+                        <div class="row">
+                            <div class="col s12 container center">
+                                <div class="switch">
+                                    <h6>deseja gerar segunda via?</h6>
+                                    <label>
+                                        Não
+                                        <input type="checkbox" id="segunda-via">
+                                        <span class="lever"></span>
+                                        Sim
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
-        </div>
+        </DIV>
     </DIV>
 
     <div class="container form">
-
-
-
         <button onclick="adcElemento()" class="btn">GERAR</button>
         <button onclick="removeElemento()" class="btn">Apagar</button>
     </div>
 
     <div id="recibo">
 
-    </div>
 
-
-
-
-
-
-
-
-
-
-
-    <script src="script.js"></script>
+        <script src="script.js"></script>
 
 
 </body>

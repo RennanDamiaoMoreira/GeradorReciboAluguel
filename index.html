@@ -1,131 +1,839 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Recibo</title>
+    <title>Gerador de Recibo de Aluguel</title>
+    <meta name="google-site-verification" content="cHc9ku_yMv4y8DhApohJNucnqFjQscXv2vftnZROdxE">
     <link rel="stylesheet" href="css/materialize.min.css">
     <style>
-        @media print {
-            .quebraPag {
-                page-break-before: always;
+        :root {
+            --bg: #f5f1e8;
+            --surface: #fffdf8;
+            --surface-alt: #f2eadb;
+            --ink: #1e1a17;
+            --muted: #6f6257;
+            --line: #d6c4ad;
+            --accent: #8a5a2b;
+            --accent-dark: #68411d;
+            --error-bg: #fbe9e7;
+            --error-text: #a93226;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(circle at top left, rgba(138, 90, 43, 0.08), transparent 32%),
+                linear-gradient(180deg, #f7f2e9 0%, #f3ece0 100%);
+            color: var(--ink);
+            font-family: Georgia, "Times New Roman", serif;
+        }
+
+        .page-shell {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 32px 16px 48px;
+        }
+
+        .workspace {
+            display: grid;
+            gap: 24px;
+        }
+
+        .panel {
+            background: rgba(255, 253, 248, 0.92);
+            border: 1px solid rgba(214, 196, 173, 0.8);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(84, 59, 38, 0.09);
+        }
+
+        .hero {
+            padding: 28px 28px 12px;
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            font-size: 0.82rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(2rem, 4vw, 3.4rem);
+            line-height: 1;
+        }
+
+        .hero p {
+            max-width: 760px;
+            margin: 12px 0 0;
+            color: var(--muted);
+            font-size: 1.02rem;
+        }
+
+        .app-layout {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+            align-items: start;
+        }
+
+        .form-panel {
+            padding: 24px;
+            position: sticky;
+            top: 16px;
+        }
+
+        .form-panel h2,
+        .preview-panel h2 {
+            margin: 0 0 16px;
+            font-size: 1.35rem;
+        }
+
+        .section-title {
+            margin: 20px 0 12px;
+            font-size: 0.85rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .field-grid {
+            display: grid;
+            gap: 14px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .field-grid .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field label {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .field input {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: #fff;
+            height: 48px;
+            padding: 0 14px;
+            font-size: 1rem;
+            box-shadow: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .field input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(138, 90, 43, 0.12);
+            outline: none;
+        }
+
+        .hint {
+            margin: 4px 0 0;
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        .toggle-row {
+            margin-top: 8px;
+            padding: 16px;
+            border-radius: 18px;
+            background: var(--surface-alt);
+            border: 1px solid var(--line);
+        }
+
+        .toggle-row strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .toggle-row label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--ink);
+        }
+
+        .toggle-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-custom,
+        .btn-outline {
+            border: 0;
+            border-radius: 999px;
+            padding: 0 18px;
+            min-height: 46px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        .btn-custom {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 10px 24px rgba(138, 90, 43, 0.24);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent-dark);
+            border: 1px solid var(--line);
+        }
+
+        .btn-custom:hover,
+        .btn-outline:hover {
+            transform: translateY(-1px);
+        }
+
+        .preview-panel {
+            padding: 24px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .preview-header p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .error-box {
+            display: none;
+            margin: 16px 0 0;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid rgba(169, 50, 38, 0.18);
+        }
+
+        .error-box.is-visible {
+            display: block;
+        }
+
+        .empty-state {
+            padding: 24px;
+            margin-top: 24px;
+            border: 1px dashed var(--line);
+            border-radius: 18px;
+            color: var(--muted);
+            background: rgba(242, 234, 219, 0.42);
+        }
+
+        .receipt-list {
+            display: grid;
+            gap: 18px;
+            margin-top: 24px;
+        }
+
+        .page-cut-line {
+            position: relative;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-cut-line::before {
+            content: "";
+            width: 100%;
+            border-top: 1px dashed #777;
+        }
+
+        .page-cut-line span {
+            position: absolute;
+            padding: 0 8px;
+            font-size: 0.62rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #666;
+            background: rgba(255, 253, 248, 0.92);
+            white-space: nowrap;
+        }
+
+        .receipt-item {
+            display: grid;
+            grid-template-columns: minmax(150px, 0.36fr) 16px minmax(0, 1fr);
+            gap: 12px;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #8e8e8e;
+            border-radius: 14px;
+            box-shadow: 0 12px 28px rgba(70, 48, 28, 0.08);
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .receipt-copy-badge {
+            grid-column: 1 / -1;
+            padding: 4px 8px;
+            border: 1px solid #777;
+            border-radius: 8px;
+            background: #faf6ef;
+            color: var(--accent-dark);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            justify-self: start;
+        }
+
+        .receipt-main,
+        .stub {
+            border: 1px solid #8e8e8e;
+            border-radius: 12px;
+            padding: 6px;
+            min-height: 100%;
+        }
+
+        .stub {
+            background: #fcfcfc;
+        }
+
+        .cut-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+        }
+
+        .cut-line::before {
+            content: "";
+            width: 0;
+            align-self: stretch;
+            border-left: 1px dashed #666;
+        }
+
+        .cut-line span {
+            position: absolute;
+            transform: rotate(-90deg);
+            transform-origin: center;
+            padding: 0 4px;
+            font-size: 0.58rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #666;
+            background: #fff;
+            white-space: nowrap;
+        }
+
+        .stub-shell,
+        .receipt-shell {
+            border: 1px solid #9d9d9d;
+            border-radius: 10px;
+            min-height: 100%;
+            padding: 6px;
+        }
+
+        .stub-topline,
+        .receipt-topline {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+            margin-bottom: 6px;
+        }
+
+        .stub-number,
+        .receipt-title,
+        .line-box,
+        .check-row,
+        .date-row,
+        .stub-lines,
+        .stub-checks {
+            border: 1px solid #9d9d9d;
+            border-radius: 7px;
+            background: #fff;
+        }
+
+        .stub-number {
+            min-height: 24px;
+            padding: 3px 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .receipt-title {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 8px;
+            min-height: 30px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .receipt-number-box {
+            min-width: 84px;
+            min-height: 22px;
+            padding: 2px 6px;
+            border: 1px solid #9d9d9d;
+            border-radius: 7px;
+            font-size: 0.72rem;
+        }
+
+        .receipt-body {
+            display: grid;
+            gap: 6px;
+        }
+
+        .line-box {
+            min-height: 24px;
+            padding: 4px 7px;
+            font-size: 0.72rem;
+            line-height: 1.25;
+        }
+
+        .line-box.tall {
+            min-height: 42px;
+        }
+
+        .line-box strong,
+        .stub-item strong {
+            font-weight: 700;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .three-col {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr 0.9fr;
+            gap: 6px;
+        }
+
+        .check-row,
+        .date-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-height: 24px;
+            padding: 4px 7px;
+            font-size: 0.7rem;
+        }
+
+        .check-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .box {
+            width: 12px;
+            height: 12px;
+            border: 1px solid #777;
+            display: inline-block;
+        }
+
+        .stub h4 {
+            display: none;
+        }
+
+        .stub-lines {
+            padding: 5px 6px;
+            margin-top: 6px;
+            font-size: 0.65rem;
+            line-height: 1.28;
+        }
+
+        .stub-lines .mini-line,
+        .mini-fill {
+            display: block;
+            border-bottom: 1px solid #b8b8b8;
+            min-height: 14px;
+        }
+
+        .date-row .mini-fill {
+            flex: 1;
+            min-width: 60px;
+            min-height: 12px;
+        }
+
+        .stub-checks {
+            margin-top: 6px;
+            padding: 4px 6px;
+            font-size: 0.65rem;
+        }
+
+        .stub-signature {
+            margin-top: 6px;
+            padding: 4px 6px;
+            border: 1px solid #9d9d9d;
+            border-radius: 7px;
+            font-size: 0.65rem;
+        }
+
+        .stub-signature-line {
+            min-height: 15px;
+            border-bottom: 1px solid #7c7c7c;
+        }
+
+        .print-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        @media (max-width: 960px) {
+            .app-layout {
+                grid-template-columns: 1fr;
             }
 
-            div {
-                widows: 0;
-                orphans: 0;
+            .form-panel {
+                position: static;
             }
 
-            .form {
-                display: none;
+            .receipt-item,
+            .stub-topline,
+            .receipt-topline,
+            .field-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cut-line {
+                min-height: 24px;
+            }
+
+            .cut-line::before {
+                width: 100%;
+                border-left: 0;
+                border-top: 1px dashed #666;
+            }
+
+            .cut-line span {
+                transform: none;
+            }
+
+            .two-col,
+            .three-col {
+                grid-template-columns: 1fr;
             }
 
         }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 6mm;
+            }
+
+            body {
+                background: #fff;
+            }
+
+            .page-shell {
+                max-width: none;
+                padding: 0;
+            }
+
+            .hero,
+            .form-panel,
+            .preview-header,
+            .empty-state,
+            .error-box {
+                display: none !important;
+            }
+
+            .panel,
+            .receipt-item {
+                box-shadow: none;
+                border-radius: 0;
+                border-color: #000;
+                background: #fff;
+            }
+
+            .preview-panel {
+                padding: 0;
+                border: 0;
+                background: #fff;
+            }
+
+            .receipt-list {
+                gap: 2.5mm;
+                margin: 0;
+            }
+
+            .page-cut-line {
+                height: 2.5mm;
+            }
+
+            .page-cut-line span {
+                font-size: 5pt;
+                padding: 0 1.5mm;
+                background: #fff;
+                color: #555;
+            }
+
+            .receipt-item {
+                grid-template-columns: 29% 3mm 1fr;
+                gap: 2mm;
+                padding: 1.2mm;
+                break-inside: avoid;
+                page-break-inside: avoid;
+                page-break-after: auto;
+                align-items: stretch;
+            }
+
+            .receipt-copy-badge {
+                padding: 0.4mm 1.2mm;
+                color: #000;
+                font-size: 6pt;
+            }
+
+            .cut-line::before {
+                border-left-color: #777;
+            }
+
+            .cut-line span {
+                font-size: 5pt;
+                color: #555;
+            }
+
+            .receipt-main,
+            .stub {
+                padding: 0.8mm;
+            }
+
+            .stub-shell,
+            .receipt-shell {
+                padding: 0.8mm;
+            }
+
+            .receipt-main,
+            .stub,
+            .stub-shell,
+            .receipt-shell,
+            .stub-number,
+            .receipt-title,
+            .line-box,
+            .check-row,
+            .date-row,
+            .stub-lines,
+            .stub-checks,
+            .stub-signature,
+            .receipt-number-box {
+                border-color: #777;
+            }
+
+            .receipt-title {
+                min-height: 18px;
+                padding: 1.5px 4px;
+                font-size: 8pt;
+            }
+
+            .line-box,
+            .check-row,
+            .date-row,
+            .stub-lines,
+            .stub-checks,
+            .stub-signature,
+            .stub-number,
+            .receipt-number-box {
+                font-size: 6pt;
+                line-height: 1.15;
+            }
+
+            .stub-number,
+            .receipt-number-box {
+                min-height: 16px;
+                padding: 1px 4px;
+            }
+
+            .receipt-topline,
+            .stub-topline {
+                gap: 1.5mm;
+                margin-bottom: 1.2mm;
+            }
+
+            .receipt-body {
+                gap: 1.2mm;
+            }
+
+            .line-box {
+                min-height: 16px;
+                padding: 1.5px 4px;
+            }
+
+            .line-box.tall {
+                min-height: 24px;
+            }
+
+            .check-row,
+            .date-row,
+            .stub-lines,
+            .stub-checks,
+            .stub-signature {
+                padding: 1.5px 4px;
+                margin-top: 1.2mm;
+            }
+
+            .check-row,
+            .date-row {
+                min-height: 16px;
+                gap: 8px;
+            }
+
+            .stub-lines .mini-line,
+            .mini-fill {
+                min-height: 10px;
+            }
+
+            .stub-signature-line {
+                min-height: 10px;
+            }
+
+            .box {
+                width: 8px;
+                height: 8px;
+            }
+        }
     </style>
-    <meta name="google-site-verification" content="cHc9ku_yMv4y8DhApohJNucnqFjQscXv2vftnZROdxE" />
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9170880056715770"
+     crossorigin="anonymous"></script>
 </head>
-<meta name="google-site-verification" content="cHc9ku_yMv4y8DhApohJNucnqFjQscXv2vftnZROdxE" />
+<body>
+    <main class="page-shell">
+        <section class="workspace">
+            <header class="panel hero">
+                <p class="eyebrow">Gerador de documentos</p>
+                <h1>Recibos de aluguel prontos para imprimir</h1>
+                <p>Preencha os dados, gere a prévia e imprima em A4 com canhoto destacável. Cada competência mensal sai numerada e pronta para assinatura.</p>
+            </header>
 
-<body class="">
-    <DIV class="ROW " id="modelo">
-        <div class="col s12">
-            <div class=" container  ">
-                <div class="card ">
-                    <div class="row">
-                        <div class=" col s2 center-align offset-s1">
-
+            <section class="app-layout">
+                <section class="panel form-panel" aria-labelledby="form-title">
+                    <h2 id="form-title">Dados do recibo</h2>
+                    <form id="recibo-form" novalidate>
+                        <p class="section-title">Partes</p>
+                        <div class="field-grid">
+                            <div class="field">
+                                <label for="inquilino">Inquilino(a)</label>
+                                <input type="text" id="inquilino" name="inquilino" autocomplete="name" placeholder="Nome completo do inquilino">
+                            </div>
+                            <div class="field">
+                                <label for="locador">Locador(a)</label>
+                                <input type="text" id="locador" name="locador" autocomplete="name" placeholder="Nome completo do locador">
+                            </div>
                         </div>
-                        <div class=" col s6 center-align">
-                            <h6>RECIBO DE ALUGUEL</h6>
+
+                        <p class="section-title">Endereço do imóvel</p>
+                        <div class="field-grid">
+                            <div class="field full-width">
+                                <label for="rua">Rua</label>
+                                <input type="text" id="rua" name="rua" placeholder="Rua, avenida ou travessa">
+                            </div>
+                            <div class="field">
+                                <label for="numero">Número</label>
+                                <input type="text" id="numero" name="numero" placeholder="Ex.: 123">
+                            </div>
+                            <div class="field">
+                                <label for="complemento">Complemento</label>
+                                <input type="text" id="complemento" name="complemento" placeholder="Apto, bloco, casa, fundos">
+                            </div>
+                            <div class="field">
+                                <label for="bairro">Bairro</label>
+                                <input type="text" id="bairro" name="bairro" placeholder="Nome do bairro">
+                            </div>
+                            <div class="field">
+                                <label for="cidade">Cidade</label>
+                                <input type="text" id="cidade" name="cidade" placeholder="Cidade">
+                            </div>
                         </div>
 
+                        <p class="section-title">Período e valor</p>
+                        <div class="field-grid">
+                            <div class="field">
+                                <label for="inicio">Data inicial</label>
+                                <input type="date" id="inicio" name="inicio">
+                            </div>
+                            <div class="field">
+                                <label for="final">Data final</label>
+                                <input type="date" id="final" name="final">
+                            </div>
+                            <div class="field">
+                                <label for="valor">Valor do aluguel</label>
+                                <input type="text" id="valor" name="valor" inputmode="decimal" placeholder="Ex.: 1250,00">
+                            </div>
+                            <div class="field">
+                                <label for="valorExtenso">Valor por extenso</label>
+                                <input type="text" id="valorExtenso" name="valorExtenso" placeholder="Opcional. Se vazio, o sistema calcula.">
+                            </div>
+                        </div>
+                        <p class="hint">O período é tratado como competências mensais inclusivas. Exemplo: janeiro a março gera três recibos.</p>
+
+                        <div class="toggle-row">
+                            <strong>Segunda via</strong>
+                            <label for="segunda-via">
+                                <input type="checkbox" id="segunda-via" name="segunda-via">
+                                Duplicar cada recibo com o mesmo conteúdo e o mesmo canhoto
+                            </label>
+                        </div>
+
+                        <div id="form-error" class="error-box" role="alert" aria-live="polite"></div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-custom">Gerar recibos</button>
+                            <button type="button" class="btn-outline" id="limpar-btn">Limpar prévia</button>
+                            <button type="button" class="btn-outline" id="imprimir-btn">Imprimir</button>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="panel preview-panel" aria-labelledby="preview-title">
+                    <div class="preview-header">
+                        <div>
+                            <h2 id="preview-title">Pré-visualização</h2>
+                            <p>Os recibos aparecem aqui prontos para revisão e impressão.</p>
+                        </div>
+                        <div class="print-actions">
+                            <span class="hint">A impressão oculta o formulário automaticamente.</span>
+                        </div>
                     </div>
-                    <div class="row">
-                        <div class="container">
-                            <div class="col s6 center">
-                                <h6>INQUILINO(A)</h6>
-                                <input type="text" placeholder="Inquilino" id="inquilino">
 
-                            </div>
-                            <div class="col s6 center">
-                                <h6>PROPRIETARIO(A)</h6>
-                                <input type="text" placeholder="Locador" id="locador">
-
-                            </div>
-                        </div>
-
-                        <div class="col s12 container center">
-
-                            <h6>ENDEREÇO</h6>
-                            <div class="container">
-                                <input type="text" placeholder="rua" id="rua" name="rua">
-                                <input type="text" placeholder="numero" id="numero">
-                                <input type="text" placeholder="casa (opcional)" id=casa>
-                                <input type="text" placeholder="bairro" id="bairro">
-                                <input type="text" placeholder="Cidade" id="cidade">
-                            </div>
-
-                            <h6>Período</h6>
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col s6">
-                                        <p>Data inicial</p>
-                                        <input type="date" placeholder="dataInicial" id="inicio"
-                                            style="width: fit-content;" />
-                                    </div>
-                                    <div class="col s6">
-                                        <p>Data Final</p>
-                                        <input type="date" placeholder="dataFinal" id="final"
-                                            style="width: fit-content;">
-                                    </div>
-                                </div>
-                            </div>
-                            <br>
-                            <h6>Valor</h6>
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col s6">
-                                        <input type="text" placeholder="valor" id="valor">
-                                    </div>
-                                    <div class="col s6">
-                                        <input type="text" placeholder="Valor por extenso (opcional)" id="valorExtenso">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col s12 container center">
-                                <div class="switch">
-                                    <h6>deseja gerar segunda via?</h6>
-                                    <label>
-                                        Não
-                                        <input type="checkbox" id="segunda-via">
-                                        <span class="lever"></span>
-                                        Sim
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
+                    <div id="recibo-vazio" class="empty-state">
+                        Preencha o formulário para gerar os recibos com corpo principal e canhoto destacável.
                     </div>
-                </div>
-            </div>
-        </DIV>
-    </DIV>
+                    <div id="recibo" class="receipt-list" aria-live="polite"></div>
+                </section>
+            </section>
+        </section>
+    </main>
 
-    <div class="container form">
-        <button onclick="adcElemento()" class="btn">GERAR</button>
-        <button onclick="removeElemento()" class="btn">Apagar</button>
-    </div>
-
-    <div id="recibo">
-
-
-        <script src="script.js"></script>
-
-
+    <script src="script.js"></script>
 </body>
-
 </html>
